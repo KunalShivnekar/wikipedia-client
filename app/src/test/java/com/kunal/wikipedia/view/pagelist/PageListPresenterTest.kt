@@ -36,33 +36,35 @@ class PageListPresenterTest : BaseUnitTest(){
     }
 
     @Test
-    fun `on Start - remoteDataSource success `() {
+    fun `on search - remoteDataSource success `() {
         val callbackSlot = slot<GetItemsCallback<Page>>()
         val mockData  =ArrayList<Page>()
-        every { remoteDataSource.getItems(capture(callbackSlot)) } answers {
+        val text = "text"
+        every { remoteDataSource.getItems(text, capture(callbackSlot)) } answers {
             callbackSlot.captured.onSuccess(mockData)
         }
 
-        pageListPresenter.onStart()
+        pageListPresenter.search(text)
 
         verify(exactly = 1) { view.showLoader() }
-        verify(exactly = 1) { remoteDataSource.getItems(eq(callbackSlot.captured)) }
+        verify(exactly = 1) { remoteDataSource.getItems(text, eq(callbackSlot.captured)) }
         verify { view.setData(mockData) }
         verify { view.hideLoader() }
     }
 
     @Test
-    fun `on Start - remoteDataSource failure `() {
+    fun `on search - remoteDataSource failure `() {
         val callbackSlot = slot<GetItemsCallback<Page>>()
         val mockData  = Response("Error")
-        every { remoteDataSource.getItems(capture(callbackSlot)) } answers {
+        val text = "text"
+        every { remoteDataSource.getItems(text, capture(callbackSlot)) } answers {
             callbackSlot.captured.onFailure(mockData)
         }
 
-        pageListPresenter.onStart()
+        pageListPresenter.search(text)
 
         verify(exactly = 1) { view.showLoader() }
-        verify(exactly = 1) { remoteDataSource.getItems(eq(callbackSlot.captured)) }
+        verify(exactly = 1) { remoteDataSource.getItems(text, eq(callbackSlot.captured)) }
         verify { view.showError(mockData.description) }
         verify { view.hideLoader() }
     }
