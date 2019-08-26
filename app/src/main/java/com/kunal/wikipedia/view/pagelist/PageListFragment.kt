@@ -10,6 +10,7 @@ import android.view.ViewGroup
 import com.kunal.wikipedia.R
 import com.kunal.wikipedia.view.base.BaseFragment
 import com.kunal.wikipedia.view.pagelist.model.Page
+import kotlinx.android.synthetic.main.fragment_page_list.view.*
 
 /**
  * A fragment representing a list of Items.
@@ -23,12 +24,17 @@ class PageListFragment : BaseFragment<PageListContract.Presenter>(), PageListCon
     private val pageListAdapter = PageListAdapter(this@PageListFragment)
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        val view = inflater.inflate(R.layout.fragment_page_list, container, false) as RecyclerView
-        with(view) {
+        val view = inflater.inflate(R.layout.fragment_page_list, container, false)
+        with(view.list) {
             layoutManager = LinearLayoutManager(context)
             adapter = pageListAdapter
         }
         return view
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        view.search.setOnClickListener { presenter.search(view.text.text.toString()) }
     }
 
     override fun setData(list: List<Page>) {

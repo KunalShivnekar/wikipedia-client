@@ -12,5 +12,5 @@ interface DataSource<T> {
         fun onSuccess(data: List<T>)
     }
 
-    fun getItems(getItemsCallback: GetItemsCallback<T>)
+    fun getItems(query:String, getItemsCallback: GetItemsCallback<T>)
 }

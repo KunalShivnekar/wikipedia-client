@@ -35,7 +35,8 @@ class PageListAdapter(private val listener: OnPageSelectedListener) : RecyclerVi
                 if(value == null) return
                 field = value
                 view.page_name.text = value.title
-                view.page_content.text = value.terms.description[0]
+                if(value.terms != null)
+                    view.page_content.text = value.terms.description[0]
                 if(value.thumbnail != null)
                     Picasso.get().load(value.thumbnail.source).into(view.page_image)
             }

@@ -13,5 +13,7 @@ interface PageListContract {
         fun setData(list:List<Page>)
     }
 
-    interface Presenter:BasePresenter<View>
+    interface Presenter:BasePresenter<View>{
+        fun search(text:String)
+    }
 }

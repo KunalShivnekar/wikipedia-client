@@ -12,10 +12,9 @@ import javax.inject.Inject
  */
 class PageListPresenter @Inject constructor(private val remoteDataSource: RemoteDataSource): BasePresenterImpl<PageListContract.View>(), PageListContract.Presenter{
 
-    override fun onStart() {
-        super.onStart()
+    override fun search(text:String) {
         view?.showLoader()
-        remoteDataSource.getItems(object : GetItemsCallback<Page> {
+        remoteDataSource.getItems(text, object : GetItemsCallback<Page> {
             override fun onFailure(response: Response) {
                 view?.showError(response.description)
                 view?.hideLoader()

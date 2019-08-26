@@ -19,10 +19,10 @@ import javax.inject.Inject
  */
 class RemoteDataSourceImpl @Inject constructor(private val httpClient: HttpClient, private val gson: Gson) : DataSourceImpl<Page>(), RemoteDataSource {
 
-    private val endPointURL:String = "https://en.wikipedia.org//w/api.php?action=query&format=json&prop=pageimages%7Cpageterms&generator=prefixsearch&redirects=1&formatversion=2&piprop=thumbnail&pithumbsize=50&pilimit=10&wbptterms=description&gpssearch=Sachin+T&gpslimit=10"
+    private val endPointURL:String = "https://en.wikipedia.org//w/api.php?action=query&format=json&prop=pageimages%7Cpageterms&generator=prefixsearch&redirects=1&formatversion=2&piprop=thumbnail&pithumbsize=50&pilimit=10&wbptterms=description&gpssearch="
 
-    override fun getItems(getItemsCallback: GetItemsCallback<Page>) {
-        val request = HttpRequest(endPointURL)
+    override fun getItems(query:String,getItemsCallback: GetItemsCallback<Page>) {
+        val request = HttpRequest("$endPointURL$query&gpslimit=10")
         httpClient.get(request = request, callback = object : ResponseCallback {
             override fun onSuccess(httpResponse: HttpResponse) {
                 val jsonResponse =  JSONObject(httpResponse.body).getJSONObject("query").getJSONArray("pages").toString()
