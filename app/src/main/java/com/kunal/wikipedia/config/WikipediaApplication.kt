@@ -8,6 +8,7 @@ import com.kunal.wikipedia.di.components.DataComponent
 /**
  * Created by kunal.
  */
+const val test = "test"
 class WikipediaApplication : Application() {
 
     lateinit var appComponent:AppComponent
