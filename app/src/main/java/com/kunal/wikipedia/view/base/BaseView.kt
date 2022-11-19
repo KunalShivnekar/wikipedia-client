@@ -5,14 +5,7 @@ import androidx.lifecycle.LifecycleObserver
 /**
  * Created by kunal.
  */
-interface BaseView <T : LifecycleObserver> {
-
-    /**
-     * Use this method to attach a presenter to this view
-     *
-     * @param presenter the presenter to be attached
-     */
-    fun attachPresenter(presenter: T)
+interface BaseView{
 
     /**
      * Use this method to hide progress bar on the view

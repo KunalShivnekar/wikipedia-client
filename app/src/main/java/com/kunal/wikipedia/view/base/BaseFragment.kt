@@ -6,6 +6,8 @@ import android.os.Bundle
 import android.view.View
 import android.widget.Toast
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.LifecycleObserver
+import androidx.lifecycle.ViewModelProvider
 import com.kunal.wikipedia.config.WikipediaApplication
 import com.kunal.wikipedia.di.components.ViewComponent
 import javax.inject.Inject
@@ -13,16 +15,18 @@ import javax.inject.Inject
 /**
  * Created by kunal.
  */
-abstract class BaseFragment<T:BasePresenter<*>>:Fragment(),BaseView<T> {
+abstract class BaseFragment:Fragment(),BaseView {
 
-    protected lateinit var presenter:T
     private lateinit var progressDialog: ProgressDialog
     protected lateinit var injector: ViewComponent
+    @Inject
+    lateinit var viewModelFactory: ViewModelProvider.Factory
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
         activity?.let {
-            injector = (it.application as WikipediaApplication).dataComponent.viewComponentBuilder.build()
+            injector =
+                (it.application as WikipediaApplication).dataComponent.viewComponentBuilder.build()
         }
     }
 
@@ -35,23 +39,7 @@ abstract class BaseFragment<T:BasePresenter<*>>:Fragment(),BaseView<T> {
         }
     }
 
-    override fun onDestroy() {
-        super.onDestroy()
-        presenter.detachView()
-        lifecycle.removeObserver(presenter)
-    }
-    /**
-     * Use this method to attach a presenter to this view
-     *
-     * @param presenter the presenter to be attached
-     */
-    @Inject
-    override fun attachPresenter(presenter: T) {
-        this.presenter = presenter
-        lifecycle.addObserver(presenter)
-    }
-
-    override fun showError(error:String) {
+    override fun showError(error: String) {
         showToast(error)
     }
 

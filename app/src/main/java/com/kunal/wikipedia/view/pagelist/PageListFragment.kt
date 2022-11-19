@@ -2,14 +2,17 @@ package com.kunal.wikipedia.view.pagelist
 
 import android.content.Context
 import android.os.Bundle
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.activityViewModels
+import androidx.fragment.app.viewModels
+import androidx.lifecycle.Observer
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.kunal.wikipedia.R
+import com.kunal.wikipedia.data.base.Response
+import com.kunal.wikipedia.data.pagelist.model.Page
 import com.kunal.wikipedia.view.base.BaseFragment
-import com.kunal.wikipedia.view.pagelist.model.Page
 import kotlinx.android.synthetic.main.fragment_page_list.view.*
 
 /**
@@ -17,11 +20,15 @@ import kotlinx.android.synthetic.main.fragment_page_list.view.*
  * Activities containing this fragment MUST implement the
  * [PageListFragment.OnPageListInteractionListener] interface.
  */
-class PageListFragment : BaseFragment<PageListContract.Presenter>(), PageListContract.View, PageListAdapter.OnPageSelectedListener {
+class PageListFragment : BaseFragment(), PageListAdapter.OnPageSelectedListener {
 
     private var listener: OnPageListInteractionListener? = null
 
     private val pageListAdapter = PageListAdapter(this@PageListFragment)
+
+    private val pageListViewModel by viewModels<PageListViewModel> { viewModelFactory }
+    //private val pageListViewModel by activityViewModels<PageListViewModel>()
+
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val view = inflater.inflate(R.layout.fragment_page_list, container, false)
@@ -34,17 +41,33 @@ class PageListFragment : BaseFragment<PageListContract.Presenter>(), PageListCon
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        view.search.setOnClickListener { presenter.search(view.text.text.toString()) }
+        view.search.setOnClickListener {
+            showLoader()
+            pageListViewModel.search(view.text.text.toString())
+        }
     }
 
-    override fun setData(list: List<Page>) {
-        pageListAdapter.contentList = list
+    override fun onStart() {
+        super.onStart()
+        pageListViewModel.pageList.observe(this) {
+            it?.let {
+                hideLoader()
+                pageListAdapter.contentList = it
+            }
+        }
+
+        pageListViewModel.error.observe(this) {
+            it?.let {
+                hideLoader()
+                showError(it.toString())
+
+            }
+        }
     }
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
         injector.inject(this)
-        presenter.attachView(this,this)
         if (context is OnPageListInteractionListener) {
             listener = context
         } else {

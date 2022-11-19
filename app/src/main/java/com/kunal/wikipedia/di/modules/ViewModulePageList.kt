@@ -1,7 +1,6 @@
 package com.kunal.wikipedia.di.modules
 
-import com.kunal.wikipedia.view.pagelist.PageListContract
-import com.kunal.wikipedia.view.pagelist.PageListPresenter
+import com.kunal.wikipedia.view.pagelist.PageListViewModel
 import dagger.Module
 import dagger.Provides
 
@@ -12,5 +11,5 @@ import dagger.Provides
 class ViewModulePageList {
 
     @Provides
-    fun getPageListPresenter(pageListPresenter: PageListPresenter):PageListContract.Presenter = pageListPresenter
+    fun getPageListViewModel(pageListViewModel: PageListViewModel):PageListViewModel = pageListViewModel
 }
